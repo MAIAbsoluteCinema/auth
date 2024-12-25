@@ -5,7 +5,7 @@ import jwt as pyjwt
 from fastapi import HTTPException
 
 # Инициализация Firebase Admin SDK
-cred = credentials.Certificate("service-account-key.json")
+cred = credentials.Certificate("123.json")
 initialize_app(cred)
 
 # Ваш Firebase API Key (из конфигурации)
