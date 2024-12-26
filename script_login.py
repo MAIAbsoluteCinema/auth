@@ -2,7 +2,7 @@ import requests
 
 url = "http://127.0.0.1:8080/login" 
 data = {
-    "email": "ruslan@example.com",   # Замените на email пользователя
+    "email": "an@example.com",   # Замените на email пользователя
     "password": "ruslan123"   # Замените на пароль пользователя
 }
 

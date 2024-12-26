@@ -14,36 +14,45 @@ FIREBASE_API_KEY = "AIzaSyCRkVpDEoq_ii589jj3bAMk_-78FTaAp10"  # Замените
 # Секретный ключ для подписи JWT
 SECRET_KEY = "your_secret_key"  # Замените на безопасный ключ
 
-# Функция для регистрации пользователя
 def register_user(email, password, username):
     try:
-        # Создание пользователя в Firebase
-        user_record = auth.create_user(
-            email=email,
-            password=password,
-            display_name=username,
-        )
+        # Firebase REST API URL для регистрации пользователя
+        firebase_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
 
-        # Генерация пользовательского UUID
-        user_id = user_record.uid  # UUID из Firebase
-        role = "client"  # Роль по умолчанию
+        # Отправляем запрос на регистрацию
+        response = requests.post(firebase_api_url, json={
+            "email": email,
+            "password": password,
+            "returnSecureToken": True
+        })
+
+        # Проверяем результат
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=400,
+                detail=response.json().get("error", {}).get("message", "Registration failed")
+            )
+
+        user_data = response.json()
 
         # Генерация JWT токена с ролью
         payload = {
             "user": {
                 "username": username,
-                "id": user_id,
-                "role": role,
+                "id": user_data["localId"],  # ID пользователя
+                "role": "client",  # По умолчанию
             },
             "iat": datetime.utcnow(),
-            "exp": datetime.utcnow() + timedelta(days=7),  # Токен истекает через 7 дней
+            "exp": datetime.utcnow() + timedelta(days=7),
         }
 
         token = pyjwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
         return {"token": token, "message": "User registered successfully!"}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 
 # Функция для логина пользователя

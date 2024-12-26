@@ -2,9 +2,9 @@ import requests
 
 url = "http://127.0.0.1:8080/register" 
 data = {
-    "email": "ruslan@example.com",
+    "email": "zxc123@example.com",
     "password": "ruslan123",
-    "username": "xxxd"
+    "username": "xxxd123"
 }
 response = requests.post(url, json=data)
 
